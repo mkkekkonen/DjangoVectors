@@ -1,0 +1,22 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'vectors/bootstrap.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'vectors/bootstrap-theme.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'vectors/pysite.css' %}" />
+
+<div class="row">
+    {% include "vectors/sidebar.html" with page_list=page_list %}
+    <div class="col-sm-5">
+        {% include "vectors/title.html" %}
+        <div id="compat-warning"></div>
+        <ul>
+            {% for page in page_list %}
+                <li>
+                    <a href="/vectors/pages/{{ page.url }}">{{ page.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="canvas-container" class="col-sm-4">
+    </div>
+</div>
+{% include "vectors/canvas.html" %}

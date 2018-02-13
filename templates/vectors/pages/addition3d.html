@@ -1,0 +1,60 @@
+<h3>Vector u</h3>
+<input id="ux" type="number" /> <label for="ux">u<sub>X</sub></label> <br/>
+<input id="uy" type="number" /> <label for="uy">u<sub>Y</sub></label> <br/>
+<input id="uz" type="number" /> <label for="uz">u<sub>Z</sub></label> <br/>
+<br/>
+<h3>Vector v</h3>
+<input id="vx" type="number" /> <label for="vx">v<sub>X</sub></label> <br/>
+<input id="vy" type="number" /> <label for="vy">v<sub>Y</sub></label> <br/>
+<input id="vz" type="number" /> <label for="vz">v<sub>Z</sub></label> <br/>
+
+<script type="text/javascript">
+	
+	var OX = null;
+	var OY = null;
+	var XY = null;
+	
+    function calculate() {
+		
+		var ux = parseFloat($("#ux").val());
+		var uy = parseFloat($("#uy").val());
+		var uz = parseFloat($("#uz").val());
+		
+		var vx = parseFloat($("#vx").val());
+		var vy = parseFloat($("#vy").val());
+		var vz = parseFloat($("#vz").val());
+		
+		var result = "X: " + (ux + vx) +
+			" Y: " + (uy + vy) +
+			" Z: " + (uz + vz);
+		$("#result").text(result);
+		
+		if(Detector.webgl) {
+		
+			if(OX !== null)
+				scene.remove(OX);
+			if(OY !== null)
+				scene.remove(OY);
+			if(XY !== null)
+				scene.remove(XY);
+		
+			var uGeometry = new THREE.Geometry();
+			uGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+			uGeometry.vertices.push(new THREE.Vector3(ux, uy, uz));
+			
+			var vGeometry = new THREE.Geometry();
+			vGeometry.vertices.push(new THREE.Vector3(ux, uy, uz));
+			vGeometry.vertices.push(new THREE.Vector3(ux + vx, uy + vy, uz + vz));
+			
+			var resGeometry = new THREE.Geometry();
+			resGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+			resGeometry.vertices.push(new THREE.Vector3(ux + vx, uy + vy, uz + vz));
+			
+			scene.add(OX = new THREE.Line(uGeometry, redMaterial));
+			scene.add(XY = new THREE.Line(vGeometry, greenMaterial));
+			scene.add(OY = new THREE.Line(resGeometry, blueMaterial));
+			
+			renderer.render(scene, camera);
+		}
+	}
+</script>

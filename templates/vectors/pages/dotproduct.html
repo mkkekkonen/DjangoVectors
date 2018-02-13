@@ -1,0 +1,46 @@
+<h3>Vector v length</h3>
+<input id="vl" type="number" /> <label for="vl">v<sub>l</sub></label> <br/>
+<h3>Vector u length</h3>
+<input id="ul" type="number" /> <label for="ul">u<sub>l</sub></label> <br/>
+<h3>Angle between v and u</h3>
+<input id="alpha" type="number" /> <label for="alpha">&alpha; &deg;</label> <br/>
+
+<script type="text/javascript">
+
+    var v = null;
+    var u = null;
+
+    function calculate() {
+        
+        var vl = parseFloat($("#vl").val());
+        var ul = parseFloat($("#ul").val());
+        var alpha = parseFloat($("#alpha").val());
+        
+        var result = Math.abs(vl) * Math.abs(ul) * Math.cos(toRadians(alpha));
+        $("#result").text(result);
+        
+        if(Detector.webgl) {
+            
+            if(v !== null)
+                scene.remove(v);
+            if(u !== null)
+                scene.remove(u);
+                
+            var vGeometry = new THREE.Geometry();
+            vGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            vGeometry.vertices.push(new THREE.Vector3(vl, 0, 0));
+            
+            var sphericalU = MVector3.spherical(ul, alpha, 0);
+            var uGeometry = new THREE.Geometry();
+            uGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            uGeometry.vertices.push(new THREE.Vector3(sphericalU.x, sphericalU.y, sphericalU.z));
+            console.dir(sphericalU);
+            
+            scene.add(v = new THREE.Line(vGeometry, redMaterial));
+            scene.add(u = new THREE.Line(uGeometry, greenMaterial));
+            
+            renderer.render(scene, camera);
+        }
+    }
+
+</script>

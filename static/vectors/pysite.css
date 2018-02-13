@@ -1,0 +1,39 @@
+body {
+    font-family:monospace;
+}
+
+#camera-position {
+    margin-bottom: 25px;
+}
+
+#canvas-container {
+    width: 480px;
+    min-height: 580px;
+}
+
+canvas {
+    border:1px solid black;
+    margin:50px;
+}
+
+#legend {
+    background-color: #000;
+    margin: 0 0 50px 50px;
+    max-width: 480px;
+    padding: 30px;
+}
+
+.page-content {
+    padding-left:50px;
+}
+
+.sidebar {
+    border-right:1px solid silver;
+    border-bottom:1px solid silver;
+    padding:35px;
+}
+
+.text-body {
+    padding-left:50px;
+    width:40vw;
+}

@@ -1,0 +1,10 @@
+<div class="col-md-2 sidebar">
+    {% for category in category_list %}
+        <h4>{{ category.name }}</h4>
+        {% for page in page_list %}
+            {% if page.category == category and page.passive == False %}
+                - <a href="/vectors/pages/{{ page.url }}">{{ page.title }}</a><br/>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</div>

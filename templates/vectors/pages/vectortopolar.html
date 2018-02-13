@@ -1,0 +1,35 @@
+<h3>Vector v</h3>
+<input id="vx" type="number" /> <label for="vx">v<sub>X</sub></label> <br/>
+<input id="vy" type="number" /> <label for="vy">v<sub>Y</sub></label> <br/>
+
+<script type="text/javascript">
+    
+    var v = null;
+    
+    function calculate() {
+        
+        var vx = parseFloat($("#vx").val());
+        var vy = parseFloat($("#vy").val());
+        
+        var _v = new MVector3(vx, vy, 0);
+        var polar = _v.toPolarCoords();
+        
+        var result = "r: " + polar.r + " &theta;: " + polar.theta;
+        $("#result").html(result);
+        
+        if(Detector.webgl) {
+            
+            if(v !== null)
+                scene.remove(v);
+                
+            var vGeometry = new THREE.Geometry();
+            vGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            vGeometry.vertices.push(new THREE.Vector3(vx, vy, 0));
+            
+            scene.add(v = new THREE.Line(vGeometry, redMaterial));
+            
+            renderer.render(scene, camera);
+        }
+    }
+    
+</script>

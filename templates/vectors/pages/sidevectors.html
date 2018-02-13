@@ -1,0 +1,75 @@
+<h3>Vertex A</h3>
+<input id="ax" type="number" /> <label for="ax">A<sub>X</sub></label> <br/>
+<input id="ay" type="number" /> <label for="ay">A<sub>Y</sub></label> <br/>
+<input id="az" type="number" /> <label for="az">A<sub>Z</sub></label> <br/>
+<br/>
+<h3>Vertex B</h3>
+<input id="bx" type="number" /> <label for="bx">B<sub>X</sub></label> <br/>
+<input id="by" type="number" /> <label for="by">B<sub>Y</sub></label> <br/>
+<input id="bz" type="number" /> <label for="bz">B<sub>Z</sub></label> <br/>
+<br/>
+<h3>Vertex C</h3>
+<input id="cx" type="number" /> <label for="cx">C<sub>X</sub></label> <br/>
+<input id="cy" type="number" /> <label for="cy">C<sub>Y</sub></label> <br/>
+<input id="cz" type="number" /> <label for="cz">C<sub>Z</sub></label> <br/>
+
+<script type="text/javascript">
+    
+    var AB = null;
+    var CB = null;
+    var CA = null;
+    
+    function calculate() {
+        
+        var ax = parseFloat($("#ax").val());
+        var ay = parseFloat($("#ay").val());
+        var az = parseFloat($("#az").val());
+        
+        var bx = parseFloat($("#bx").val());
+        var by = parseFloat($("#by").val());
+        var bz = parseFloat($("#bz").val());
+        
+        var cx = parseFloat($("#cx").val());
+        var cy = parseFloat($("#cy").val());
+        var cz = parseFloat($("#cz").val());
+        
+        var _C = new MVector3(cx, cy, cz);
+        var _CA = new MVector3(ax, ay, az).sub(_C);
+        var _CB = new MVector3(bx, by, bz).sub(_C);
+        
+        var lenCA = _CA.len();
+        var lenCB = _CB.len();
+        
+        var result = "CA: X: " + _CA.x + " Y: " + _CA.y + " Z: " + _CA.z + " length: " + lenCA + "<br/>" +
+            "CB: X: " + _CB.x + " Y: " + _CB.y + " Z: " + _CB.z + " length: " + lenCB;
+        $("#result").html(result);
+        
+        if(Detector.webgl) {
+            
+            if(AB !== null)
+                scene.remove(AB);
+            if(CB !== null)
+                scene.remove(CB);
+            if(CA !== null)
+                scene.remove(CA);
+            
+            var ABGeometry = new THREE.Geometry();
+            ABGeometry.vertices.push(new THREE.Vector3(ax, ay, az));
+            ABGeometry.vertices.push(new THREE.Vector3(bx, by, bz));
+            
+            var CBGeometry = new THREE.Geometry();
+            CBGeometry.vertices.push(new THREE.Vector3(cx, cy, cz));
+            CBGeometry.vertices.push(new THREE.Vector3(bx, by, bz));
+            
+            var CAGeometry = new THREE.Geometry();
+            CAGeometry.vertices.push(new THREE.Vector3(cx, cy, cz));
+            CAGeometry.vertices.push(new THREE.Vector3(ax, ay, az));
+            
+            scene.add(AB = new THREE.Line(ABGeometry, blueMaterial));
+            scene.add(CB = new THREE.Line(CBGeometry, redMaterial));
+            scene.add(CA = new THREE.Line(CAGeometry, greenMaterial));
+            
+            renderer.render(scene, camera);
+        }
+    }
+</script>

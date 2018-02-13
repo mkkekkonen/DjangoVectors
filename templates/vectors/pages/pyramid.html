@@ -1,0 +1,112 @@
+<h3>Vertex A</h3>
+<input id="ax" type="number" /> <label for="ax">A<sub>X</sub></label> <br/>
+<input id="ay" type="number" /> <label for="ay">A<sub>Y</sub></label> <br/>
+<input id="az" type="number" /> <label for="az">A<sub>Z</sub></label> <br/>
+<br/>
+<h3>Vertex B</h3>
+<input id="bx" type="number" /> <label for="bx">B<sub>X</sub></label> <br/>
+<input id="by" type="number" /> <label for="by">B<sub>Y</sub></label> <br/>
+<input id="bz" type="number" /> <label for="bz">B<sub>Z</sub></label> <br/>
+<br/>
+<h3>Vertex C</h3>
+<input id="cx" type="number" /> <label for="cx">C<sub>X</sub></label> <br/>
+<input id="cy" type="number" /> <label for="cy">C<sub>Y</sub></label> <br/>
+<input id="cz" type="number" /> <label for="cz">C<sub>Z</sub></label> <br/>
+<br/>
+<h3>Vertex D</h3>
+<input id="dx" type="number" /> <label for="dx">D<sub>X</sub></label> <br/>
+<input id="dy" type="number" /> <label for="dy">D<sub>Y</sub></label> <br/>
+<input id="dz" type="number" /> <label for="dz">D<sub>Z</sub></label> <br/>
+
+<script type="text/javascript">
+    
+    var AB = null;
+    var BC = null;
+    var AC = null;
+    var AD = null;
+    var BD = null;
+    var CD = null;
+    
+    function calculate() {
+        
+        var ax = parseFloat($("#ax").val());
+        var ay = parseFloat($("#ay").val());
+        var az = parseFloat($("#az").val());
+        
+        var bx = parseFloat($("#bx").val());
+        var by = parseFloat($("#by").val());
+        var bz = parseFloat($("#bz").val());
+        
+        var cx = parseFloat($("#cx").val());
+        var cy = parseFloat($("#cy").val());
+        var cz = parseFloat($("#cz").val());
+        
+        var dx = parseFloat($("#dx").val());
+        var dy = parseFloat($("#dy").val());
+        var dz = parseFloat($("#dz").val());
+        
+        var B = new MVector3(bx, by, bz);
+        var C = new MVector3(cx, cy, cz);
+        var D = new MVector3(dx, dy, dz);
+        
+        var _DB = B.sub(D);
+        var _DC = C.sub(D);
+        
+        var cosine = _DB.dot(_DC) / (_DB.len() * _DC.len());
+        var arccosine = Math.acos(cosine);
+        var angle = toDegrees(arccosine);
+        
+        var result = "DB, DC " + angle + " &deg;";
+        $("#result").html(result);
+        
+        if(Detector.webgl) {
+            
+            if(AB !== null)
+                scene.remove(AB);
+            if(BC !== null)
+                scene.remove(BC);
+            if(AC !== null)
+                scene.remove(AC);
+            if(AD !== null)
+                scene.remove(AD);
+            if(BD !== null)
+                scene.remove(BD);
+            if(CD !== null)
+                scene.remove(CD);
+                
+            var ABGeometry = new THREE.Geometry();
+            ABGeometry.vertices.push(new THREE.Vector3(ax, ay, az));
+            ABGeometry.vertices.push(new THREE.Vector3(bx, by, bz));
+            
+            var BCGeometry = new THREE.Geometry();
+            BCGeometry.vertices.push(new THREE.Vector3(bx, by, bz));
+            BCGeometry.vertices.push(new THREE.Vector3(cx, cy, cz));
+            
+            var ACGeometry = new THREE.Geometry();
+            ACGeometry.vertices.push(new THREE.Vector3(ax, ay, az));
+            ACGeometry.vertices.push(new THREE.Vector3(cx, cy, cz));
+            
+            var ADGeometry = new THREE.Geometry();
+            ADGeometry.vertices.push(new THREE.Vector3(ax, ay, az));
+            ADGeometry.vertices.push(new THREE.Vector3(dx, dy, dz));
+            
+            var BDGeometry = new THREE.Geometry();
+            BDGeometry.vertices.push(new THREE.Vector3(bx, by, bz));
+            BDGeometry.vertices.push(new THREE.Vector3(dx, dy, dz));
+            
+            var CDGeometry = new THREE.Geometry();
+            CDGeometry.vertices.push(new THREE.Vector3(cx, cy, cz));
+            CDGeometry.vertices.push(new THREE.Vector3(dx, dy, dz));
+            
+            scene.add(AB = new THREE.Line(ABGeometry, redMaterial));
+            scene.add(BC = new THREE.Line(BCGeometry, greenMaterial));
+            scene.add(AC = new THREE.Line(ACGeometry, blueMaterial));
+            scene.add(AD = new THREE.Line(ADGeometry, tealMaterial));
+            scene.add(BD = new THREE.Line(BDGeometry, magentaMaterial));
+            scene.add(CD = new THREE.Line(CDGeometry, yellowMaterial));
+            
+            renderer.render(scene, camera);
+        }
+    }
+    
+</script>

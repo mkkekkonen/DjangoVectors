@@ -1,0 +1,80 @@
+<h3>Vector v</h3>
+<input id="rv" type="number" /> <label for="rv">r<sub>v</sub></label> <br/>
+<input id="alpha" type="number" /> <label for="alpha">&alpha;</label> <br/>
+
+<h3>Vector u</h3>
+<input id="ru" type="number" /> <label for="ru">r<sub>u</sub></label> <br/>
+<input id="beta" type="number" /> <label for="beta">&beta;</label> <br/>
+
+<h3>Resultant vector</h3>
+<input id="r_resultant" type="number" /> <label for="r_resultant">r<sub>resultant</sub></label> <br/>
+<input id="theta" type="number" /> <label for="theta">&theta;</label> <br/>
+
+<script type="text/javascript">
+    
+    var v = null;
+    var u = null;
+    var resultant = null;
+    var w = null;
+    
+    function calculate() {
+        
+        var rv = parseFloat($("#rv").val());
+        var alpha = parseFloat($("#alpha").val());
+        
+        var ru = parseFloat($("#ru").val());
+        var beta = parseFloat($("#beta").val());
+        
+        var r_resultant = parseFloat($("#r_resultant").val());
+        var theta = parseFloat($("#theta").val());
+        
+        var _v = MVector3.polar(rv, alpha);
+        var _u = MVector3.polar(ru, beta);
+        var _resultant = MVector3.polar(r_resultant, theta);
+        
+        var _w = _resultant.sub(_v).sub(_u);
+        var wPolar = _w.toPolarCoords();
+        if(wPolar.theta < 0)
+            wPolar.theta = 360 + wPolar.theta;
+        
+        var result = "r<sub>w</sub>: " + wPolar.r +
+            " &gamma;: " + wPolar.theta;
+        $("#result").html(result);
+        
+        if(Detector.webgl) {
+            
+            if(v !== null)
+                scene.remove(v);
+            if(u !== null)
+                scene.remove(u);
+            if(resultant !== null)
+                scene.remove(resultant);
+            if(w !== null)
+                scene.remove(w);
+                
+            var vGeometry = new THREE.Geometry();
+            vGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            vGeometry.vertices.push(new THREE.Vector3(_v.x, _v.y, _v.z));
+                
+            var uGeometry = new THREE.Geometry();
+            uGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            uGeometry.vertices.push(new THREE.Vector3(_u.x, _u.y, _u.z));
+                
+            var resultantGeometry = new THREE.Geometry();
+            resultantGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            resultantGeometry.vertices.push(new THREE.Vector3(_resultant.x, _resultant.y, _resultant.z));
+                
+            var wGeometry = new THREE.Geometry();
+            wGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            wGeometry.vertices.push(new THREE.Vector3(_w.x, _w.y, _w.z));
+            
+            scene.add(v = new THREE.Line(vGeometry, redMaterial));
+            scene.add(u = new THREE.Line(uGeometry, greenMaterial));
+            scene.add(resultant = new THREE.Line(resultantGeometry, blueMaterial));
+            scene.add(w = new THREE.Line(wGeometry, tealMaterial));
+            
+            renderer.render(scene, camera);
+        }
+    }
+    
+</script>

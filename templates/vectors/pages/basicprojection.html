@@ -1,0 +1,65 @@
+<h3>Vector a</h3>
+<input id="ax" type="number" /> <label for="ax">a<sub>X</sub></label> <br/>
+<input id="ay" type="number" /> <label for="ay">a<sub>Y</sub></label> <br/>
+<input id="az" type="number" /> <label for="az">a<sub>Z</sub></label> <br/>
+<h3>Vector b</h3>
+<input id="bx" type="number" /> <label for="bx">b<sub>X</sub></label> <br/>
+<input id="by" type="number" /> <label for="by">b<sub>Y</sub></label> <br/>
+<input id="bz" type="number" /> <label for="bz">b<sub>Z</sub></label> <br/>
+
+<script type="text/javascript">
+    
+    var a = null;
+    var b = null;
+    var a_b = null;
+    
+    function calculate() {
+        
+        var ax = parseFloat($("#ax").val());
+        var ay = parseFloat($("#ay").val());
+        var az = parseFloat($("#az").val());
+        
+        var bx = parseFloat($("#bx").val());
+        var by = parseFloat($("#by").val());
+        var bz = parseFloat($("#bz").val());
+        
+        var _a = new MVector3(ax, ay, az);
+        var _b = new MVector3(bx, by, bz);
+        
+        var scalar_a_b = _a.scalarProjection(_b);
+        var vector_a_b = _a.vectorProjection(_b);
+        
+        var result = "Scalar projection: " + scalar_a_b + "<br/>" +
+            "Vector projection: X: " + vector_a_b.x + " Y: " + vector_a_b.y + " Z: " + vector_a_b.z;
+        $("#result").html(result);
+        
+        if(Detector.webgl) {
+            
+            if(a !== null)
+                scene.remove(a);
+            if(b !== null)
+                scene.remove(b);
+            if(a_b !== null)
+                scene.remove(a_b);
+                
+            var aGeometry = new THREE.Geometry();
+            aGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            aGeometry.vertices.push(new THREE.Vector3(ax, ay, az));
+            
+            var bGeometry = new THREE.Geometry();
+            bGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            bGeometry.vertices.push(new THREE.Vector3(bx, by, bz));
+            
+            var a_b_geometry = new THREE.Geometry();
+            a_b_geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+            a_b_geometry.vertices.push(new THREE.Vector3(vector_a_b.x, vector_a_b.y, vector_a_b.z));
+            
+            scene.add(a = new THREE.Line(aGeometry, redMaterial));
+            scene.add(b = new THREE.Line(bGeometry, greenMaterial));
+            scene.add(a_b = new THREE.Line(a_b_geometry, blueMaterial));
+            
+            renderer.render(scene, camera);
+        }
+    }
+    
+</script>

@@ -1,0 +1,51 @@
+<h3>Point P</h3>
+<input id="px" type="number" /> <label for="px">P<sub>X</sub></label> <br/>
+<input id="py" type="number" /> <label for="py">P<sub>Y</sub></label> <br/>
+<input id="pz" type="number" /> <label for="pz">P<sub>Z</sub></label> <br/>
+<h3>Point Q</h3>
+<input id="qx" type="number" /> <label for="qx">Q<sub>X</sub></label> <br/>
+<input id="qy" type="number" /> <label for="qy">Q<sub>Y</sub></label> <br/>
+<input id="qz" type="number" /> <label for="qz">Q<sub>Z</sub></label> <br/>
+<h3>Point R</h3>
+<input id="rx" type="number" /> <label for="rx">R<sub>X</sub></label> <br/>
+<input id="ry" type="number" /> <label for="ry">R<sub>Y</sub></label> <br/>
+<input id="rz" type="number" /> <label for="rz">R<sub>Z</sub></label> <br/>
+
+<script type="text/javascript">
+    
+    var P = null;
+    var line = null;
+    
+    function calculate() {
+        
+        var px = parseInt($("#px").val(), 10);
+        var py = parseInt($("#py").val(), 10);
+        var pz = parseInt($("#pz").val(), 10);
+        
+        var qx = parseInt($("#qx").val(), 10);
+        var qy = parseInt($("#qy").val(), 10);
+        var qz = parseInt($("#qz").val(), 10);
+        
+        var rx = parseInt($("#rx").val(), 10);
+        var ry = parseInt($("#ry").val(), 10);
+        var rz = parseInt($("#rz").val(), 10);
+        
+        if(Detector.webgl) {
+            
+            if(P !== null)
+                scene.remove(P);
+            if(line !== null)
+                scene.remove(line);
+                
+            var lineGeometry = new THREE.Geometry();
+            lineGeometry.vertices.push(new THREE.Vector3(px, py, pz));
+            lineGeometry.vertices.push(new THREE.Vector3(qx, qy, qz));
+            lineGeometry.vertices.push(new THREE.Vector3(rx, ry, rz));
+            
+            scene.add(line = new THREE.Line(lineGeometry, blueMaterial));
+            
+            renderer.render(scene);
+        }
+    }
+    
+</script>

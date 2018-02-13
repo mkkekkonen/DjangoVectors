@@ -1,0 +1,58 @@
+<h3>Vector v</h3>
+<input id="vx" type="number" /> <label for="vx">v<sub>X</sub></label> <br/>
+<input id="vy" type="number" /> <label for="vy">v<sub>Y</sub></label> <br/>
+<input id="vz" type="number" /> <label for="vz">v<sub>Z</sub></label> <br/>
+<br/>
+<h3>Ending point P</h3>
+<input id="px" type="number" /> <label for="px">P<sub>X</sub></label> <br/>
+<input id="py" type="number" /> <label for="py">P<sub>Y</sub></label> <br/>
+<input id="pz" type="number" /> <label for="pz">P<sub>Z</sub></label> <br/>
+
+<script type="text/javascript">
+    
+    var p = null;
+    var v = null;
+    
+    function calculate() {
+        
+        var vx = parseFloat($("#vx").val());
+        var vy = parseFloat($("#vy").val());
+        var vz = parseFloat($("#vz").val());
+        
+        var px = parseFloat($("#px").val());
+        var py = parseFloat($("#py").val());
+        var pz = parseFloat($("#pz").val());
+        
+        var _v = new MVector3(vx, vy, vz);
+        var _p = new MVector3(px, py, pz);
+        
+        _v = _p.sub(_v);
+        
+        var result = "X: " + _v.x + " Y: " + _v.y + " Z: " + _v.z;
+        $("#result").text(result);
+        
+        if(Detector.webgl) {
+            
+            if(v !== null)
+                scene.remove(v);
+            if(p !== null)
+                scene.remove(p);
+                
+            var vGeometry = new THREE.Geometry();
+            vGeometry.vertices.push(new THREE.Vector3(_v.x, _v.y, _v.z));
+            vGeometry.vertices.push(new THREE.Vector3(px, py, pz));
+            
+            var pGeometry = new THREE.SphereGeometry(POINT_RADIUS, POINT_SEGMENTS, POINT_SEGMENTS);
+            p = new THREE.Mesh(pGeometry, redMaterial);
+            p.position.x = _v.x;
+            p.position.y = _v.y;
+            p.position.z = _v.z;
+            
+            scene.add(v = new THREE.Line(vGeometry, blueMaterial));
+            scene.add(p);
+            
+            renderer.render(scene, camera);
+        }
+    }
+    
+</script>

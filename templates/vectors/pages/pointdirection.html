@@ -1,0 +1,62 @@
+<h3>Starting point P</h3>
+<input id="px" type="number" /> <label for="px">P<sub>X</sub></label> <br/>
+<input id="py" type="number" /> <label for="py">P<sub>Y</sub></label> <br/>
+<input id="pz" type="number" /> <label for="pz">P<sub>Z</sub></label> <br/>
+<h3>Vector v</h3>
+<input id="vx" type="number" /> <label for="vx">v<sub>X</sub></label> <br/>
+<input id="vy" type="number" /> <label for="vy">v<sub>Y</sub></label> <br/>
+<input id="vz" type="number" /> <label for="vz">v<sub>Z</sub></label> <br/>
+<h3>Distance</h3>
+<input id="units" type="number" /> <br/>
+
+<script type="text/javascript">
+    
+    var P = null;
+    var v = null;
+    
+    function calculate() {
+        
+        var px = parseFloat($("#px").val());
+        var py = parseFloat($("#py").val());
+        var pz = parseFloat($("#pz").val());
+        
+        var vx = parseFloat($("#vx").val());
+        var vy = parseFloat($("#vy").val());
+        var vz = parseFloat($("#vz").val());
+        
+        var units = parseInt($("#units").val(), 10);
+        
+        var _v = new MVector3(vx, vy, vz);
+        var vNorm = _v.norm();
+        _v = vNorm.mul(units);
+        var P1 = new MVector3(px, py, pz);
+        _v = P1.add(_v);
+        
+        var result = "X: " + _v.x + " Y: " + _v.y + " Z: " + _v.z;
+        $("#result").text(result);
+        
+        if(Detector.webgl) {
+            
+            if(P !== null)
+                scene.remove(P);
+            if(v !== null)
+                scene.remove(v);
+                
+            var PGeometry = new THREE.SphereGeometry(POINT_RADIUS, POINT_SEGMENTS, POINT_SEGMENTS);
+            P = new THREE.Mesh(PGeometry, redMaterial);
+            P.position.x = _v.x;
+            P.position.y = _v.y;
+            P.position.z = _v.z;
+            
+            var vGeometry = new THREE.Geometry();
+            vGeometry.vertices.push(new THREE.Vector3(px, py, pz));
+            vGeometry.vertices.push(new THREE.Vector3(_v.x, _v.y, _v.z));
+            
+            scene.add(P);
+            scene.add(v = new THREE.Line(vGeometry, blueMaterial));
+            
+            renderer.render(scene, camera);
+        }
+    }
+    
+</script>

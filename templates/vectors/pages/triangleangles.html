@@ -1,0 +1,90 @@
+<h3>Vertex A</h3>
+<input id="ax" type="number" /> <label for="ax">A<sub>X</sub></label> <br/>
+<input id="ay" type="number" /> <label for="ay">A<sub>Y</sub></label> <br/>
+<input id="az" type="number" /> <label for="az">A<sub>Z</sub></label> <br/>
+<br/>
+<h3>Vertex B</h3>
+<input id="bx" type="number" /> <label for="bx">B<sub>X</sub></label> <br/>
+<input id="by" type="number" /> <label for="by">B<sub>Y</sub></label> <br/>
+<input id="bz" type="number" /> <label for="bz">B<sub>Z</sub></label> <br/>
+<br/>
+<h3>Vertex C</h3>
+<input id="cx" type="number" /> <label for="cx">C<sub>X</sub></label> <br/>
+<input id="cy" type="number" /> <label for="cy">C<sub>Y</sub></label> <br/>
+<input id="cz" type="number" /> <label for="cz">C<sub>Z</sub></label> <br/>
+
+<script type="text/javascript">
+    
+    var AB = null;
+    var BC = null;
+    var AC = null;
+    
+    function calculate() {
+        
+        var ax = parseFloat($("#ax").val());
+        var ay = parseFloat($("#ay").val());
+        var az = parseFloat($("#az").val());
+        
+        var bx = parseFloat($("#bx").val());
+        var by = parseFloat($("#by").val());
+        var bz = parseFloat($("#bz").val());
+        
+        var cx = parseFloat($("#cx").val());
+        var cy = parseFloat($("#cy").val());
+        var cz = parseFloat($("#cz").val());
+        
+        var A = new MVector3(ax, ay, az);
+        var B = new MVector3(bx, by, bz);
+        var C = new MVector3(cx, cy, cz);
+        
+        var _AB = B.sub(A);
+        var _BC = C.sub(B);
+        var _AC = C.sub(A);
+        
+        var cos_BA_BC = _AB.opposite().dot(_BC) / (_AB.len() * _BC.len());
+        var cos_BC_AC = _BC.dot(_AC) / (_BC.len() * _AC.len());
+        var cos_AB_AC = _AB.dot(_AC) / (_AB.len() * _AC.len());
+        
+        var acos_BA_BC = Math.acos(cos_BA_BC);
+        var acos_BC_AC = Math.acos(cos_BC_AC);
+        var acos_AB_AC = Math.acos(cos_AB_AC);
+        
+        var angle_BA_BC = toDegrees(acos_BA_BC);
+        var angle_BC_AC = toDegrees(acos_BC_AC);
+        var angle_AB_AC = toDegrees(acos_AB_AC);
+        
+        var result = "BA, BC: " + angle_BA_BC + " &deg;<br/>" +
+            "BC, AC: " + angle_BC_AC + " &deg;<br/>" +
+            "AB, AC: " + angle_AB_AC + " &deg;";
+        $("#result").html(result);
+        
+        if(Detector.webgl) {
+            
+            if(AB !== null)
+                scene.remove(AB);
+            if(BC !== null)
+                scene.remove(BC);
+            if(AC !== null)
+                scene.remove(AC);
+                
+            var ABGeometry = new THREE.Geometry();
+            ABGeometry.vertices.push(new THREE.Vector3(ax, ay, az));
+            ABGeometry.vertices.push(new THREE.Vector3(bx, by, bz));
+            
+            var BCGeometry = new THREE.Geometry();
+            BCGeometry.vertices.push(new THREE.Vector3(bx, by, bz));
+            BCGeometry.vertices.push(new THREE.Vector3(cx, cy, cz));
+            
+            var ACGeometry = new THREE.Geometry();
+            ACGeometry.vertices.push(new THREE.Vector3(ax, ay, az));
+            ACGeometry.vertices.push(new THREE.Vector3(cx, cy, cz));
+            
+            scene.add(AB = new THREE.Line(ABGeometry, redMaterial));
+            scene.add(BC = new THREE.Line(BCGeometry, greenMaterial));
+            scene.add(AC = new THREE.Line(ACGeometry, blueMaterial));
+            
+            renderer.render(scene, camera);
+        }
+    }
+    
+</script>

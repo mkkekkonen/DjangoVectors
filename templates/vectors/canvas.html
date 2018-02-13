@@ -1,0 +1,112 @@
+{% load static %}
+<script src="{% static 'vectors/jquery-3.1.1.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'vectors/three.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'vectors/Detector.js' %}" type="text/javascript"></script>
+<script type="text/javascript">
+	
+    var X = "X";
+	var Y = "Y";
+	var Z = "Z";
+	var POS = "+";
+	var NEG = "-";
+	
+	var CAMERA_DELTA = 0.2;
+	var POINT_RADIUS = 0.3;
+	var POINT_SEGMENTS = 8;
+	
+	var renderer = null;
+	var camera = null;
+	var scene = null;
+
+	var redMaterial = null;
+	var greenMaterial = null;
+	var blueMaterial = null;
+	var yellowMaterial = null;
+	var magentaMaterial = null;
+	var tealMaterial = null;
+	var blackMaterial = null;
+	
+	$(document).ready(function() {
+	
+		if(Detector.webgl) {
+			
+			redMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+			greenMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+			blueMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+			yellowMaterial = new THREE.LineBasicMaterial({ color: 0xcccc00 });
+			magentaMaterial = new THREE.LineBasicMaterial({ color: 0xcc00cc });
+			tealMaterial = new THREE.LineBasicMaterial({ color: 0x00cccc });
+			blackMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+		
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize(480, 480);
+			$("#canvas-container").append(renderer.domElement);
+			
+			camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2000);
+			
+			camera.position.set(0, 2, 40);
+			camera.lookAt(new THREE.Vector3(0, 0, 0));
+			updateCameraPositionInfo();
+			
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color(0xffffff);
+			
+			// addTestLine();
+			
+			addAxes();
+		}
+		else {
+			$("#compat-warning").append(Detector.getWebGLErrorMessage());
+		}	
+	});
+    
+    function updateCameraPositionInfo() {
+		
+		$("#camera-position").text("X: " + camera.position.x + " Y: " + camera.position.y + " Z: " + camera.position.z);
+	}
+    
+    function addAxes() {
+		
+		var xGeometry = new THREE.Geometry();
+		xGeometry.vertices.push(new THREE.Vector3(-100, 0, 0));
+		xGeometry.vertices.push(new THREE.Vector3(100, 0, 0));
+		
+		var yGeometry = new THREE.Geometry();
+		yGeometry.vertices.push(new THREE.Vector3(0, -100, 0));
+		yGeometry.vertices.push(new THREE.Vector3(0, 100, 0));
+		
+		var zGeometry = new THREE.Geometry();
+		zGeometry.vertices.push(new THREE.Vector3(0, 0, -100));
+		zGeometry.vertices.push(new THREE.Vector3(0, 0, 100));
+		
+		scene.add(new THREE.Line(xGeometry, blackMaterial));
+		scene.add(new THREE.Line(yGeometry, blackMaterial));
+		scene.add(new THREE.Line(zGeometry, blackMaterial));
+		
+		renderer.render(scene, camera);
+	}
+    
+    function moveCamera(dim, sign) {
+		
+		if(dim == X && sign == POS)
+			camera.position.set(camera.position.x + CAMERA_DELTA, camera.position.y, camera.position.z);
+		else if(dim == X && sign == NEG)
+			camera.position.set(camera.position.x - CAMERA_DELTA, camera.position.y, camera.position.z);
+		else if(dim == Y && sign == POS)
+			camera.position.set(camera.position.x, camera.position.y + CAMERA_DELTA, camera.position.z);
+		else if(dim == Y && sign == NEG)
+			camera.position.set(camera.position.x, camera.position.y - CAMERA_DELTA, camera.position.z);
+		else if(dim == Z && sign == POS)
+			camera.position.set(camera.position.x, camera.position.y, camera.position.z + CAMERA_DELTA);
+		else if(dim == Z && sign == NEG)
+			camera.position.set(camera.position.x, camera.position.y, camera.position.z - CAMERA_DELTA);
+			
+		
+		updateCameraPositionInfo();
+			
+		camera.lookAt(0, 0, 0);
+			
+		renderer.render(scene, camera);
+	}
+    
+</script>
